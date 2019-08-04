@@ -3,7 +3,7 @@ import { MiddlewareAPI, Dispatch, Middleware, AnyAction } from "redux";
 const AjaxActionType = 'AJAX_ACTION_TYPE';
 
 export interface FetchResponse {
-    any: any
+    [key:string]: any
 }
 
 type FetchBody = Object;
@@ -42,9 +42,12 @@ const AjaxMiddleware: Middleware<Dispatch> = ({dispatch}: MiddlewareAPI) => next
     let { url, method = "GET", data, onSuccess, onFailure, headers } = action;
     let options = {
         method: method,
-        body: data ? JSON.stringify(data) : {},
         headers: headers ? headers : new Headers()
     };
+    if (data) {
+        options.body = JSON.stringify(data);
+    }
+
     return fetch("http://192.168.2.27/" + url, options)
         .then(response => {
             if(response.ok) {

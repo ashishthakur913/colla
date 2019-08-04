@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import Immutable from 'Immutable';
 import { Font } from "expo";
 import { createStackNavigator, createAppContainer } from "react-navigation";
-import LoginContainer from '../Login/_containers/LoginContainer'
+import AuthContainer from '../Auth/_containers/AuthContainer'
 
 
 class Home extends React.Component {
@@ -22,7 +22,7 @@ class Home extends React.Component {
 const AppNavigator = createStackNavigator(
     {
         Home: Home,
-        Login: LoginContainer
+        Login: AuthContainer
     },
     {
         initialRouteName: "Login"

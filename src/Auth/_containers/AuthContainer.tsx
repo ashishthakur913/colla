@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import Login from '../_components/Login'
-import { verifyUserToken, login } from './../_actions/LoginActions'
+import Auth from '../_components/Auth'
+import { verifyUserToken, login } from '../_actions/AuthActions'
 import Store from '../../_stores/Store';
 
 const mapStateToProps = (store: Store)=>{
     const toast = store.getIn(['UIData', 'toast']);
-    console.log(toast, "--toast");
+    const auth = store.getIn(['Auth']);
     return {
-        toast: toast
+        toast: toast,
+        auth: auth
     };
 };
 
@@ -19,4 +20,4 @@ const mapDispatchToProps = (dispatch: Function) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

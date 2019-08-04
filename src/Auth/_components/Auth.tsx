@@ -9,12 +9,14 @@ import { MapView } from 'expo';
 import { _retrieveAndVerifyUserToken } from '../../Common/_util/AsyncStorage';
 import Toast, {DURATION} from 'react-native-easy-toast';
 import {IToast} from '../../UIData/_stores/UIToastStore'
+import {IAuth} from '../../Auth/_stores/AuthStore'
 
 type Props = {
     navigation: Object,
     verifyUserToken: Function,
     login: Function,
-    toast: Immutable.Record<IToast>
+    toast: Immutable.Record<IToast>,
+    auth:  Immutable.Record<IAuth>,
 }
 
 type State = {
@@ -24,13 +26,20 @@ type State = {
     loggedIn: boolean
 }
 
-export default class Login extends Component<Props, State> {
+export default class Auth extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
         this.toast = null
     }
     private toast;
+
+    static defaultProps = {
+        auth: Immutable.Record<IAuth>({
+            userName: '',
+            isLoggedIn: false
+        })
+    }
 
     state = {
         password: '',
@@ -40,14 +49,16 @@ export default class Login extends Component<Props, State> {
     } as State
 
     componentDidMount() {
-        _retrieveAndVerifyUserToken(this.props.verifyUserToken, () => {
-            this.setState({tokenExists: false})
-        })
+        if (!this.props.auth.getIn(['isLoggedIn'])) {
+            _retrieveAndVerifyUserToken(this.props.verifyUserToken, () => {
+                this.setState({tokenExists: false})
+            })
+        }
     }
 
     componentDidUpdate(previousProps: Props, nextProps: Props) {
-        if (!this.state.tokenExists) {
-            console.log("does no exist====");
+        if (this.props.auth.getIn(['isLoggedIn'])) {
+            this.props.navigation.navigate('Home')
         }
 
         let toastOpen = this.props.toast.getIn(['toastOpen']);
@@ -56,9 +67,9 @@ export default class Login extends Component<Props, State> {
                 'That did not work ',
                 this.props.toast.getIn(['toastMessage']),
                 [
-                    {text: 'OK', onPress: () => console.log('OK Pressed')},
+                    {text: 'OK'},
                 ],
-                {cancelable: false},
+                {cancelable: true},
             );
         }
     }
@@ -79,60 +90,56 @@ export default class Login extends Component<Props, State> {
         // let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjQ4ODM0MTUsImlkIjoxfQ.3GyAmHPFQpfZZNDB2xkSwsyQfnMr4WRN8Nd2J5_APOI";
         // this._storeData(token);
         // this._retrieveData();
-        if (this.state.loggedIn) {
-            console.log("Logged in!!");
-        } else {
-            return <Container>
-                <Grid>
-                    <Row size={40} >
-                        <View style={styles.container}>
-                            <Thumbnail square source={require('./../../../assets/images/logo.png')} />
-                            <Text style={styles.logoText} >Collab</Text>
-                        </View>
-                    </Row>
-                    <Row size={40} >
-                        <View style={styles.inputContent}>
-                            <Item style={styles.inputItem} >
-                                <Icon active name='person' />
-                                <Input
-                                    value={this.state.email}
-                                    onChangeText={(email) => this.setEmail(email)}
-                                    placeholder='Email address'/>
-                            </Item>
-                            <Item style={styles.inputItem} >
-                                <Icon active name='key' />
-                                <Input
-                                    value={this.state.password}
-                                    onChangeText={(password) => this.setPassword(password)}
-                                    secureTextEntry={true}
-                                    placeholder='Password'/>
-                            </Item>
-                            <Button style={styles.signupButton} rounded>
-                                <Text onPress={this.login.bind(this)} style={styles.signupButtonText} >Login</Text>
-                            </Button>
-                        </View>
-                    </Row>
-                    <Row size={20} >
-                        <View style={styles.container}>
-                            <Text style={styles.notAMemberText} >Not a member yet?</Text>
-                            <Text style={styles.registerText} >Register</Text>
-                        </View>
-                    </Row>
-                </Grid>
-                <Toast
-                    ref={toast => {
-                        this.toast = toast;
-                    }}
-                    style={{backgroundColor:'grey'}}
-                    position='bottom'
-                    positionValue={200}
-                    fadeInDuration={300}
-                    fadeOutDuration={300}
-                    opacity={0.8}
-                    textStyle={{color:'#000'}}
-                />
-            </Container>
-        }
+        return <Container>
+            <Grid>
+                <Row size={40} >
+                    <View style={styles.container}>
+                        <Thumbnail square source={require('./../../../assets/images/logo.png')} />
+                        <Text style={styles.logoText} >Collab</Text>
+                    </View>
+                </Row>
+                <Row size={40} >
+                    <View style={styles.inputContent}>
+                        <Item style={styles.inputItem} >
+                            <Icon active name='person' />
+                            <Input
+                                value={this.state.email}
+                                onChangeText={(email) => this.setEmail(email)}
+                                placeholder='Email address'/>
+                        </Item>
+                        <Item style={styles.inputItem} >
+                            <Icon active name='key' />
+                            <Input
+                                value={this.state.password}
+                                onChangeText={(password) => this.setPassword(password)}
+                                secureTextEntry={true}
+                                placeholder='Password'/>
+                        </Item>
+                        <Button style={styles.signupButton} rounded>
+                            <Text onPress={this.login.bind(this)} style={styles.signupButtonText} >Login</Text>
+                        </Button>
+                    </View>
+                </Row>
+                <Row size={20} >
+                    <View style={styles.container}>
+                        <Text style={styles.notAMemberText} >Not a member yet?</Text>
+                        <Text style={styles.registerText} >Register</Text>
+                    </View>
+                </Row>
+            </Grid>
+            <Toast
+                ref={toast => {
+                    this.toast = toast;
+                }}
+                style={{backgroundColor:'grey'}}
+                position='bottom'
+                positionValue={200}
+                fadeInDuration={300}
+                fadeOutDuration={300}
+                opacity={0.8}
+                textStyle={{color:'#000'}}
+            />
+        </Container>
     }
 }
 
