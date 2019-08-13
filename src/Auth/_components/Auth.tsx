@@ -58,7 +58,7 @@ export default class Auth extends Component<Props, State> {
 
     componentDidUpdate(previousProps: Props, nextProps: Props) {
         if (this.props.auth.getIn(['isLoggedIn'])) {
-            this.props.navigation.navigate('Home')
+            this.props.navigation.navigate('Profile')
         }
 
         let toastOpen = this.props.toast.getIn(['toastOpen']);
@@ -87,9 +87,6 @@ export default class Auth extends Component<Props, State> {
     private setPassword = (password: string) => this.setState({password: password})
 
     render() {
-        // let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjQ4ODM0MTUsImlkIjoxfQ.3GyAmHPFQpfZZNDB2xkSwsyQfnMr4WRN8Nd2J5_APOI";
-        // this._storeData(token);
-        // this._retrieveData();
         return <Container>
             <Grid>
                 <Row size={40} >
