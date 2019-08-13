@@ -22,12 +22,13 @@ export function storeUserTokenAction(token: string) {
     }
 }
 
-export const setAuthAction = (username: string, loggedIn: boolean) => {
+export const setAuthAction = (username: string, chatToken: string, loggedIn: boolean) => {
     return {
         type: AuthActionsType.setUserAuth,
         action: {
             username: username,
-            isLoggedIn: loggedIn
+            isLoggedIn: loggedIn,
+            chatToken: chatToken
         }
     }
 };
@@ -41,7 +42,7 @@ export const verifyUserToken = (token: string) => CreateAjaxAction(
             'Content-Type': 'application/x-www-form-urlencoded'
         }),
         onSuccess: (response: FetchResponse, dispatch: Function) => {
-            dispatch(setAuthAction(response.user.username, true))
+            dispatch(setAuthAction(response.user.username, response.user.chatToken, true))
         },
         onFailure: (response: FetchResponse, dispatch: Function) => {
             console.log(response, "---response");
@@ -57,7 +58,7 @@ export const login = (data: loginCredentials) => CreateAjaxAction(
         }),
         data: data,
         onSuccess: (response: FetchResponse, dispatch: Function) => {
-            dispatch(setAuthAction(response.user.username, true))
+            dispatch(setAuthAction(response.user.username, response.user.chatToken, true))
             _storeData(response.user.token);
 
         },

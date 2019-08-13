@@ -8,6 +8,7 @@ const AuthReducer = (store:Immutable.OrderedMap<string, IAuth> = Immutable.Order
             return store.withMutations(store => {
                 store.setIn(['username'], action.username)
                 store.setIn(['isLoggedIn'], action.isLoggedIn)
+                store.setIn(['chatToken'], action.chatToken)
             });
             break;
     }

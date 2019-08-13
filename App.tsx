@@ -9,14 +9,14 @@ import { createStore, compose, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk';
 import AjaxMiddleware from './src/Common/_middlewares/AjaxMiddleware'
 import MainReducer from './src/_reducers/MainReducer';
-import HomeContainer from './src/_containers/HomeContainer'
+import HomeContainer from './src/_containers/HomeContainer';
 
-let ReduxStore = createStore(
+const middleware = applyMiddleware(AjaxMiddleware, thunk);
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const ReduxStore = createStore(
     MainReducer,
-    compose(
-        applyMiddleware(AjaxMiddleware, thunk),
-        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-    )
+    composeEnhancers(middleware)
 );
 
 
