@@ -63,7 +63,6 @@ export default class Profile extends Component<Props, State> {
     }
 
     private sendMessage() {
-        console.log(this.subscription, 'sending');
         this.subscription.publish({"text": "hello world"}).then(function(success) {
             console.log(success, "---success");
         }, function(err) {

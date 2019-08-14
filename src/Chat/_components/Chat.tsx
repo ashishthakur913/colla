@@ -5,6 +5,7 @@ import { GiftedChat } from 'react-native-gifted-chat';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
 import "prop-types";
+import Centrifuge from "centrifuge";
 
 const styles = StyleSheet.create({
     mapView: {
@@ -20,6 +21,7 @@ export default class Chat extends Component {
     state = {
         messages: [],
     };
+    private subscription;
 
     openMapAsync = async (location) => {
         const url = Platform.select({
@@ -40,6 +42,10 @@ export default class Chat extends Component {
         } catch ({ message }) {
             alert(message)
         }
+    }
+
+    componentDidMount() {
+        this.startChatBot();
     }
 
     renderCustomView = (props) => {
@@ -65,101 +71,36 @@ export default class Chat extends Component {
         return null
     }
 
-    componentWillMount() {
-        // if(!this.state.messages.length) {
-        //     this.setState({ messages:  [
-        //             {
-        //                 _id: Math.round(Math.random() * 1000000),
-        //                 text: '0 message',
-        //                 createdAt: new Date(),
-        //                 system: true
-        //             }]})
-        // }
-        // this.setState({ messages:  [
-        //         {
-        //             _id: Math.round(Math.random() * 1000000),
-        //             text: '#awesome',
-        //             createdAt: new Date(),
-        //             user: {
-        //                 _id: 1,
-        //                 name: 'Developer',
-        //             },
-        //         },
-        //         {
-        //             _id: Math.round(Math.random() * 1000000),
-        //             text: '',
-        //             createdAt: new Date(),
-        //             user: {
-        //                 _id: 2,
-        //                 name: 'React Native',
-        //             },
-        //             image: 'http://www.pokerpost.fr/wp-content/uploads/2017/12/iStock-604371970-1.jpg',
-        //             sent: true,
-        //             received: true,
-        //         },
-        //         {
-        //             _id: Math.round(Math.random() * 1000000),
-        //             text: 'Send me a picture!',
-        //             createdAt: new Date(),
-        //             user: {
-        //                 _id: 1,
-        //                 name: 'Developer',
-        //             },
-        //         },
-        //         {
-        //             _id: Math.round(Math.random() * 1000000),
-        //             text: '',
-        //             createdAt: new Date(),
-        //             user: {
-        //                 _id: 2,
-        //                 name: 'React Native',
-        //             },
-        //             sent: true,
-        //             received: true,
-        //             location: {
-        //                 latitude: 45.537826,
-        //                 longitude: -73.556170
-        //             },
-        //         },
-        //         {
-        //             _id: Math.round(Math.random() * 1000000),
-        //             text: 'Where are you?',
-        //             createdAt: new Date(),
-        //             user: {
-        //                 _id: 1,
-        //                 name: 'Developer',
-        //             },
-        //         },
-        //         {
-        //             _id: Math.round(Math.random() * 1000000),
-        //             text: 'Yes, and I use Gifted Chat!',
-        //             createdAt: new Date(),
-        //             user: {
-        //                 _id: 2,
-        //                 name: 'React Native',
-        //             },
-        //             sent: true,
-        //             received: true
-        //         },
-        //         {
-        //             _id: Math.round(Math.random() * 1000000),
-        //             text: 'Are you building a chat app?',
-        //             createdAt: new Date(),
-        //             user: {
-        //                 _id: 1,
-        //                 name: 'Developer',
-        //             },
-        //         },
-        //         {
-        //             _id: Math.round(Math.random() * 1000000),
-        //             text: "You are officially rocking GiftedChat.",
-        //             createdAt: new Date(),
-        //             system: true,
-        //         },
-        //     ]});
+    private startChatBot() {
+        let centrifuge = new Centrifuge('ws://192.168.2.27:8000/connection/websocket');
+        centrifuge.setToken(this.props.auth.getIn(['chatToken']));
+
+
+        var publishHandlerFunction = (function(messages) {
+            this.onRecieve(messages.data);
+        }).bind(this);
+
+        this.subscription = centrifuge.subscribe("news");
+        this.subscription.on("publish", publishHandlerFunction);
+        centrifuge.connect();
     }
 
-    onSend(messages = []) {
+    private publishMessage(message) {
+        this.subscription.publish(message).then(function(success) {
+            console.log(success, "---success");
+        }, function(err) {
+            console.log(err, "---err");
+        });
+    }
+
+    private onRecieve(messages = []) {
+        this.setState((previousState) => ({
+            messages: GiftedChat.append(previousState.messages, messages),
+        }));
+    }
+
+    private onSend(messages = []) {
+        this.publishMessage(messages);
         this.setState((previousState) => ({
             messages: GiftedChat.append(previousState.messages, messages),
         }));

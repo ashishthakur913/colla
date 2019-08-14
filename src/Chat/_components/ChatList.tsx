@@ -1,14 +1,10 @@
 import * as Immutable from 'immutable';
 import React, { Component } from 'react';
-import { View, ListView, Image, StyleSheet, ImageBackground } from "react-native";
+import { StyleSheet } from "react-native";
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import {Container, Text, Thumbnail, Content, Button} from 'native-base';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {IAuth} from "../../Auth/_stores/AuthStore";
-import Centrifuge from 'centrifuge';
+import {Container, Text, Thumbnail, List, ListItem, Left, Right, Body} from 'native-base';
 
 type Props = {
-    auth:  Immutable.Record<IAuth>,
 }
 
 type State = {
@@ -19,20 +15,50 @@ export default class ChatList extends Component<Props, State> {
     static defaultProps = {};
     state = {} as State;
 
-    render() {App.tsx
+    componentWillMount () {
+        this.props.getFriends()
+    }
+
+    render() {
         return <Container>
-            <Grid>
-                <Row size={30} style={styles.profileHeader} >
-                    <ImageBackground source={require('./../../../assets/images/man-avatar.png')} style={styles.avatarContainer}>
-                        <Row style={styles.avatarText}>
-                            <Icon name="plus" size={15} style={styles.avatarIcon} />
-                            <Text style={{color: 'white'}} >Add photo</Text>
-                        </Row>
-                    </ImageBackground>
-                </Row>
-                <Row size={70} >
-                </Row>
-            </Grid>
+            <List>
+                <ListItem avatar>
+                    <Left>
+                        <Thumbnail source={require('./../../../assets/images/woman-avatar.png')} />
+                    </Left>
+                    <Body>
+                    <Text>Ashish Kanwar</Text>
+                    <Text note>Doing what you like will always keep you happy . .</Text>
+                    </Body>
+                    <Right>
+                        <Text note>3:43 pm</Text>
+                    </Right>
+                </ListItem>
+                <ListItem avatar>
+                    <Left>
+                        <Thumbnail source={require('./../../../assets/images/woman-avatar.png')} />
+                    </Left>
+                    <Body>
+                    <Text>Kumar Pratik</Text>
+                    <Text note>Doing what you like will always keep you happy . .</Text>
+                    </Body>
+                    <Right>
+                        <Text note>3:43 pm</Text>
+                    </Right>
+                </ListItem>
+                <ListItem avatar>
+                    <Left>
+                        <Thumbnail source={require('./../../../assets/images/woman-avatar.png')} />
+                    </Left>
+                    <Body>
+                    <Text>Priyanka Thakur</Text>
+                    <Text note>Doing what you like will always keep you happy . .</Text>
+                    </Body>
+                    <Right>
+                        <Text note>3:43 pm</Text>
+                    </Right>
+                </ListItem>
+            </List>
         </Container>
     }
 }

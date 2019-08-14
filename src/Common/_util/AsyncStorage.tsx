@@ -20,3 +20,12 @@ export const _retrieveAndVerifyUserToken = async (successCallback: Function, fai
         failureCallback()
     }
 }
+
+export const  _retrieveUserToken = async () => {
+    try {
+        const value = await AsyncStorage.getItem('login_v1:token');
+        return value;
+    } catch (error) {
+        return null;
+    }
+}

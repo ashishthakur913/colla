@@ -3,20 +3,12 @@ import Home from '../_components/Home'
 import {connect} from 'react-redux';
 import { fetchUserToken } from '../Auth/_actions/AuthActions'
 
-const mapStateToProps = (state)=>{
-    return {
-        title: state.title,
-        subtitle: state.subtitle
-    };
+const mapStateToProps = ()=>{
+    return {};
 };
 
 const mapDispatchToProps = dispatch => {
-    return {
-        // dispatching plain actions
-        increment: () => dispatch(fetchUserToken),
-        decrement: () => dispatch({ type: 'DECREMENT' }),
-        reset: () => dispatch({ type: 'RESET' })
-    }
+    return {}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

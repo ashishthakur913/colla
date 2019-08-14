@@ -3,7 +3,8 @@ import * as Immutable from "immutable";
 export interface IAuth {
     userName: string,
     isLoggedIn: boolean,
-    chatToken: string
+    chatToken: string,
+    authToken: string,
 }
 
 export interface IAuthStore {
