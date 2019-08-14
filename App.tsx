@@ -5,19 +5,8 @@ import React, { useState } from 'react';
 import { Provider } from 'react-redux'
 import { Platform, StatusBar, StyleSheet, View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { createStore, compose, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk';
-import AjaxMiddleware from './src/Common/_middlewares/AjaxMiddleware'
-import MainReducer from './src/_reducers/MainReducer';
 import HomeContainer from './src/_containers/HomeContainer';
-
-const middleware = applyMiddleware(AjaxMiddleware, thunk);
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-const ReduxStore = createStore(
-    MainReducer,
-    composeEnhancers(middleware)
-);
+import ReduxStore from './src/Store'
 
 
 export default function App(props) {

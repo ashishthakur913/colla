@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import ChatList from '../_components/ChatList'
 import Store from '../../_stores/Store';
+import {getUserFriends} from '../_actions/ChatActions'
 
 const mapStateToProps = (store: Store)=>{
     const toast = store.getIn(['UIData', 'toast']);
@@ -14,7 +15,7 @@ const mapStateToProps = (store: Store)=>{
 
 const mapDispatchToProps = (dispatch: Function) => {
     return {
-        // login: (loginCredentials: loginCredentials) => dispatch(login(loginCredentials))
+        getFriends: () => dispatch(getUserFriends())
     }
 }
 
