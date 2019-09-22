@@ -87,9 +87,9 @@ export default class Chat extends Component {
 
     private publishMessage(message) {
         this.subscription.publish(message).then(function(success) {
-            console.log(success, "---success");
+            // success
         }, function(err) {
-            console.log(err, "---err");
+            // error
         });
     }
 
